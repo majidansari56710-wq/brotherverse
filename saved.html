@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Saved Quotes — BrotherVerse</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/animations.css">
+<link rel="stylesheet" href="css/responsive.css">
+<style>
+  .saved-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(240px,1fr)); gap:24px; }
+  .saved-card{ border-radius:var(--radius-lg); overflow:hidden; border:1px solid var(--line); background:var(--navy-2); }
+  .saved-card img{ width:100%; display:block; }
+  .saved-card .sc-body{ padding:16px; }
+  .saved-card .sc-meta{ font-size:.72rem; color:var(--mist-dim); margin-bottom:10px; }
+  .saved-card .sc-actions{ display:flex; gap:8px; }
+  .saved-card .sc-actions .btn{ flex:1; }
+</style>
+</head>
+<body>
+
+<div class="bg-ambient"></div>
+<div class="bg-grain"></div>
+
+<header class="navbar">
+  <div class="container">
+    <a href="index.html" class="brand"><span class="brand-mark"></span><span>BrotherVerse<small>by Majid Hub</small></span></a>
+    <nav class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="quotes.html">Quotes</a>
+      <a href="create.html">Create Post</a>
+      <a href="saved.html">Saved</a>
+      <a href="favorites.html">Favorites</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <div class="nav-cta">
+      <a href="create.html" class="btn btn-primary btn-sm">Create Post</a>
+      <button class="nav-burger" aria-label="Open menu"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+<div class="scrim"></div>
+<div class="mobile-menu">
+  <a href="index.html">Home</a>
+  <a href="quotes.html">Quotes</a>
+  <a href="create.html">Create Post</a>
+  <a href="saved.html">Saved</a>
+  <a href="favorites.html">Favorites</a>
+  <a href="about.html">About</a>
+  <a href="contact.html">Contact</a>
+  <a href="create.html" class="btn btn-primary btn-block">Create Your Post</a>
+</div>
+
+<main>
+  <section class="page-header">
+    <div class="container">
+      <span class="eyebrow">Your Library</span>
+      <h1>My Saved Quotes</h1>
+      <p>Every post you've saved from the Create Post editor lives here, stored right on this device.</p>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0;">
+    <div class="container">
+      <div class="saved-grid" id="saved-grid"></div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-bottom" style="border-top:none; padding-top:0;">
+      <span>&copy; <span data-year></span> BrotherVerse by Majid Hub. All rights reserved.</span>
+      <span>Made with brotherhood in mind.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="js/photo-config.js"></script>
+<script src="js/translations.js"></script>
+<script src="js/favorites.js"></script>
+<script src="js/saved.js"></script>
+<script src="js/quotes.js"></script>
+<script src="js/main.js"></script>
+<script>
+  (function(){
+    const grid = document.getElementById('saved-grid');
+
+    function render(){
+      const posts = window.BrotherVerseSaved.getSavedPosts();
+      grid.innerHTML = '';
+      if (!posts.length){
+        grid.innerHTML = `
+          <div class="empty-state" style="grid-column:1/-1;">
+            <div class="ph-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></div>
+            <h3>No saved posts yet</h3>
+            <p>Head to Create Post to design something beautiful, then save it here.</p>
+            <a href="create.html" class="btn btn-primary">Create Your Post</a>
+          </div>`;
+        return;
+      }
+      posts.forEach(p => {
+        const card = document.createElement('div');
+        card.className = 'saved-card reveal in';
+        const date = new Date(p.createdAt).toLocaleDateString(undefined, { month:'short', day:'numeric', year:'numeric' });
+        card.innerHTML = `
+          <img src="${p.dataUrl}" alt="Saved post: ${p.category}">
+          <div class="sc-body">
+            <div class="sc-meta">${p.category} &middot; ${date}</div>
+            <div class="sc-actions">
+              <a class="btn btn-ghost btn-sm" download="brotherverse-post.png" href="${p.dataUrl}">Download</a>
+              <button class="btn btn-ghost btn-sm" data-delete="${p.id}">Delete</button>
+            </div>
+          </div>`;
+        grid.appendChild(card);
+      });
+      grid.querySelectorAll('[data-delete]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          window.BrotherVerseSaved.deleteSavedPost(btn.dataset.delete);
+          window.BrotherVerseUI.toast('Post deleted');
+          render();
+        });
+      });
+    }
+    document.addEventListener('bv:saved-changed', render);
+    render();
+  })();
+</script>
+</body>
+</html>

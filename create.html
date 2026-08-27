@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Create Post — BrotherVerse</title>
+<meta name="description" content="Design a beautiful brother quote post — pick a quote, choose a photo, adjust and download.">
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/animations.css">
+<link rel="stylesheet" href="css/responsive.css">
+<style>
+  .editor-layout{ display:grid; grid-template-columns: 1fr 1.15fr; gap:36px; align-items:start; }
+  .editor-panel{ padding:28px; }
+  .editor-panel h3{ margin-bottom:4px; }
+  .editor-group{ margin-top:24px; }
+  .editor-group:first-child{ margin-top:0; }
+  .editor-group label.small-label{ display:block; font-size:.8rem; font-weight:700; color:var(--mist); margin-bottom:8px; }
+  select.field-select{ width:100%; padding:13px 16px; border-radius:var(--radius-sm); border:1px solid var(--line); background:var(--glass); color:var(--ink); font-size:.92rem; outline:none; }
+  select.field-select:focus{ border-color:var(--violet); }
+  textarea#quote-textarea{ width:100%; min-height:96px; padding:14px 16px; border-radius:var(--radius-sm); border:1px solid var(--line); background:var(--glass); color:var(--ink); font-family:var(--font-display); font-style:italic; font-size:1rem; resize:vertical; outline:none; }
+  textarea#quote-textarea:focus{ border-color:var(--violet); }
+  .ratio-row{ display:flex; gap:8px; }
+  .ratio-row button{ flex:1; padding:10px; border-radius:var(--radius-sm); border:1px solid var(--line); background:var(--glass); color:var(--mist); font-weight:700; font-size:.82rem; }
+  .ratio-row button.active{ background:linear-gradient(135deg, var(--violet), #6a4bff); color:#fff; border-color:transparent; }
+  .slider-row{ display:flex; align-items:center; gap:12px; }
+  .slider-row input[type=range]{ flex:1; accent-color: var(--violet); }
+  .photo-btn-row{ display:flex; gap:10px; }
+  .photo-btn-row .btn{ flex:1; }
+  .editor-actions{ display:flex; gap:10px; margin-top:28px; flex-wrap:wrap; }
+  .editor-actions .btn{ flex:1; }
+  .editor-preview{ position: sticky; top: 100px; }
+  .canvas-frame{ border-radius:24px; overflow:hidden; border:1px solid var(--line); box-shadow:var(--shadow-card); background:var(--navy-2); }
+  #post-canvas{ width:100%; height:auto; display:block; touch-action:none; }
+  .drag-hint{ text-align:center; font-size:.8rem; color:var(--mist-dim); margin-top:14px; }
+</style>
+</head>
+<body>
+
+<div class="bg-ambient"></div>
+<div class="bg-grain"></div>
+
+<header class="navbar">
+  <div class="container">
+    <a href="index.html" class="brand"><span class="brand-mark"></span><span>BrotherVerse<small>by Majid Hub</small></span></a>
+    <nav class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="quotes.html">Quotes</a>
+      <a href="create.html">Create Post</a>
+      <a href="saved.html">Saved</a>
+      <a href="favorites.html">Favorites</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <div class="nav-cta">
+      <a href="create.html" class="btn btn-primary btn-sm">Create Post</a>
+      <button class="nav-burger" aria-label="Open menu"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+<div class="scrim"></div>
+<div class="mobile-menu">
+  <a href="index.html">Home</a>
+  <a href="quotes.html">Quotes</a>
+  <a href="create.html">Create Post</a>
+  <a href="saved.html">Saved</a>
+  <a href="favorites.html">Favorites</a>
+  <a href="about.html">About</a>
+  <a href="contact.html">Contact</a>
+  <a href="create.html" class="btn btn-primary btn-block">Create Your Post</a>
+</div>
+
+<main>
+  <section class="page-header" style="padding-bottom:20px;">
+    <div class="container">
+      <span class="eyebrow">Create Post</span>
+      <h1>Design your post</h1>
+      <p>Choose a quote, drop in a photo, then drag to reposition and fine-tune before you save or download.</p>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0;">
+    <div class="container editor-layout">
+
+      <div class="editor-panel glass">
+        <h3>1. Choose your words</h3>
+        <p>Pick a quote from the library or write your own.</p>
+
+        <div class="editor-group">
+          <label class="small-label" for="category-select">Category</label>
+          <select id="category-select" class="field-select"></select>
+        </div>
+        <div class="editor-group">
+          <label class="small-label" for="quote-select">Quote</label>
+          <select id="quote-select" class="field-select"></select>
+        </div>
+        <div class="editor-group">
+          <label class="small-label" for="quote-textarea">Edit text</label>
+          <textarea id="quote-textarea" placeholder="Write your own brother quote…"></textarea>
+        </div>
+
+        <h3 class="mt-40">2. Choose your photo</h3>
+        <p>Use one of your 20 memory photos or upload from your gallery.</p>
+        <div class="editor-group photo-btn-row">
+          <button class="btn btn-primary" id="change-photo-btn">Change Photo</button>
+          <button class="btn btn-ghost" id="remove-photo-btn">Remove</button>
+        </div>
+        <p class="drag-hint" style="text-align:left; margin-top:10px;">Tip: drag directly on the preview photo to reposition it.</p>
+
+        <div class="editor-group">
+          <label class="small-label" for="zoom-slider">Zoom</label>
+          <div class="slider-row">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--mist-dim)"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+            <input type="range" id="zoom-slider" min="100" max="250" value="100">
+          </div>
+        </div>
+        <div class="editor-group">
+          <label class="small-label" for="textsize-slider">Text size</label>
+          <div class="slider-row">
+            <span style="font-size:.7rem; color:var(--mist-dim); font-weight:700;">A</span>
+            <input type="range" id="textsize-slider" min="70" max="140" value="100">
+            <span style="font-size:1.1rem; color:var(--mist-dim); font-weight:700;">A</span>
+          </div>
+        </div>
+
+        <h3 class="mt-40">3. Choose your shape</h3>
+        <div class="editor-group ratio-row">
+          <button data-ratio="square">Square</button>
+          <button data-ratio="portrait" class="active">Portrait</button>
+          <button data-ratio="story">Story</button>
+        </div>
+
+        <div class="editor-actions">
+          <button class="btn btn-ghost" id="reset-post-btn">Reset</button>
+          <button class="btn btn-gold" id="save-post-btn">Save Post</button>
+          <button class="btn btn-primary" id="download-post-btn">Download</button>
+        </div>
+      </div>
+
+      <div class="editor-preview">
+        <div class="canvas-frame">
+          <canvas id="post-canvas" width="1080" height="1350"></canvas>
+        </div>
+        <p class="drag-hint" id="editor-hint">Live preview — this is exactly what you'll download.</p>
+      </div>
+
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-bottom" style="border-top:none; padding-top:0;">
+      <span>&copy; <span data-year></span> BrotherVerse by Majid Hub. All rights reserved.</span>
+      <span>Made with brotherhood in mind.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="js/photo-config.js"></script>
+<script src="js/translations.js"></script>
+<script src="js/favorites.js"></script>
+<script src="js/saved.js"></script>
+<script src="js/quotes.js"></script>
+<script src="js/main.js"></script>
+<script src="js/editor.js"></script>
+</body>
+</html>

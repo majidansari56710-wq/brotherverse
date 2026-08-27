@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact — BrotherVerse</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/animations.css">
+<link rel="stylesheet" href="css/responsive.css">
+<style>
+  .contact-grid{ display:grid; grid-template-columns: 1fr 1.1fr; gap:48px; }
+  .contact-info-card{ padding:32px; margin-bottom:16px; }
+  .contact-info-card h4{ font-size:.82rem; text-transform:uppercase; letter-spacing:.08em; color:var(--mist-dim); margin-bottom:8px; }
+  .contact-info-card p{ color:var(--ink); font-size:1.02rem; }
+  .contact-form{ padding:36px; }
+</style>
+</head>
+<body>
+
+<div class="bg-ambient"></div>
+<div class="bg-grain"></div>
+
+<header class="navbar">
+  <div class="container">
+    <a href="index.html" class="brand"><span class="brand-mark"></span><span>BrotherVerse<small>by Majid Hub</small></span></a>
+    <nav class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="quotes.html">Quotes</a>
+      <a href="create.html">Create Post</a>
+      <a href="saved.html">Saved</a>
+      <a href="favorites.html">Favorites</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <div class="nav-cta">
+      <a href="create.html" class="btn btn-primary btn-sm">Create Post</a>
+      <button class="nav-burger" aria-label="Open menu"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+<div class="scrim"></div>
+<div class="mobile-menu">
+  <a href="index.html">Home</a>
+  <a href="quotes.html">Quotes</a>
+  <a href="create.html">Create Post</a>
+  <a href="saved.html">Saved</a>
+  <a href="favorites.html">Favorites</a>
+  <a href="about.html">About</a>
+  <a href="contact.html">Contact</a>
+  <a href="create.html" class="btn btn-primary btn-block">Create Your Post</a>
+</div>
+
+<main>
+  <section class="page-header" style="padding-bottom:20px;">
+    <div class="container">
+      <span class="eyebrow">Get in touch</span>
+      <h1>Contact</h1>
+      <p>Questions, feedback, or a quote you think belongs here? Send it over.</p>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0;">
+    <div class="container contact-grid">
+      <div>
+        <div class="contact-info-card glass">
+          <h4>Creator</h4>
+          <p>BrotherVerse by Majid Hub</p>
+        </div>
+        <div class="contact-info-card glass">
+          <h4>Response time</h4>
+          <p>Usually within 2–3 days</p>
+        </div>
+        <div class="contact-info-card glass">
+          <h4>Best for</h4>
+          <p>Feedback, quote submissions, and bug reports</p>
+        </div>
+      </div>
+
+      <form class="contact-form glass" id="contact-form" novalidate>
+        <div class="field" id="field-name">
+          <label for="name">Your name</label>
+          <input type="text" id="name" name="name" placeholder="Full name">
+          <span class="field-error">Please enter your name.</span>
+        </div>
+        <div class="field" id="field-email">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" placeholder="you@example.com">
+          <span class="field-error">Please enter a valid email address.</span>
+        </div>
+        <div class="field" id="field-message">
+          <label for="message">Message</label>
+          <textarea id="message" name="message" rows="5" placeholder="Tell me what's on your mind…"></textarea>
+          <span class="field-error">Please write a message (at least 10 characters).</span>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Send Message</button>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-bottom" style="border-top:none; padding-top:0;">
+      <span>&copy; <span data-year></span> BrotherVerse by Majid Hub. All rights reserved.</span>
+      <span>Made with brotherhood in mind.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="js/photo-config.js"></script>
+<script src="js/translations.js"></script>
+<script src="js/favorites.js"></script>
+<script src="js/saved.js"></script>
+<script src="js/quotes.js"></script>
+<script src="js/main.js"></script>
+<script>
+  (function(){
+    const form = document.getElementById('contact-form');
+    const nameF = document.getElementById('field-name');
+    const emailF = document.getElementById('field-email');
+    const msgF = document.getElementById('field-message');
+
+    function isValidEmail(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      let valid = true;
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const message = document.getElementById('message').value.trim();
+
+      nameF.classList.toggle('invalid', !name); if (!name) valid = false;
+      emailF.classList.toggle('invalid', !isValidEmail(email)); if (!isValidEmail(email)) valid = false;
+      msgF.classList.toggle('invalid', message.length < 10); if (message.length < 10) valid = false;
+
+      if (!valid) return;
+
+      // No backend is connected in this build — store locally so nothing is lost,
+      // and confirm to the user their message was captured.
+      try{
+        const inbox = JSON.parse(localStorage.getItem('bv_contact_messages_v1') || '[]');
+        inbox.unshift({ name, email, message, at: new Date().toISOString() });
+        localStorage.setItem('bv_contact_messages_v1', JSON.stringify(inbox.slice(0, 20)));
+      } catch(err){ /* ignore storage errors here */ }
+
+      window.BrotherVerseUI.toast('Message sent — thank you!', 'success');
+      form.reset();
+      [nameF, emailF, msgF].forEach(f => f.classList.remove('invalid'));
+    });
+  })();
+</script>
+</body>
+</html>

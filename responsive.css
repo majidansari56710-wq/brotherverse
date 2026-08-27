@@ -1,0 +1,49 @@
+/* ==========================================================================
+   BROTHERVERSE — Responsive
+   ========================================================================== */
+
+@media (max-width: 1080px){
+  .footer-grid{ grid-template-columns: 1.2fr 1fr 1fr; }
+  .footer-grid .foot-contact{ display: none; }
+}
+
+@media (max-width: 960px){
+  .nav-links{ display: none; }
+  .nav-burger{ display: block; }
+  .nav-cta .btn-primary{ display: none; }
+
+  .hero{ padding: 140px 0 60px; }
+  .hero-grid{ grid-template-columns: 1fr; gap: 56px; }
+  .hero-copy{ order: 1; text-align: center; }
+  .hero-copy p.lead{ margin-left: auto; margin-right: auto; }
+  .hero-actions{ justify-content: center; }
+  .hero-stats{ justify-content: center; }
+  .thread-stage{ order: 0; height: 380px; }
+
+  .footer-grid{ grid-template-columns: 1fr 1fr; gap: 32px; }
+
+  .editor-layout{ grid-template-columns: 1fr; }
+  .editor-preview{ order: -1; position: static !important; }
+}
+
+@media (max-width: 640px){
+  .section{ padding: 64px 0; }
+  .page-header{ padding: 120px 0 36px; }
+  h1{ font-size: clamp(2rem, 8vw, 2.8rem); }
+  .thread-stage{ height: 320px; }
+  .thread-portrait.p1{ width: 170px; height: 170px; }
+  .thread-portrait.p2{ width: 140px; height: 140px; }
+  .thread-card{ width: 190px; padding: 16px 18px; }
+  .hero-stats{ gap: 20px; flex-wrap: wrap; }
+  .footer-grid{ grid-template-columns: 1fr; }
+  .footer-bottom{ flex-direction: column; text-align: center; }
+  .quote-grid{ grid-template-columns: repeat(auto-fill, minmax(150px,1fr)); gap: 14px; }
+  .photo-picker-grid{ grid-template-columns: repeat(3, 1fr); }
+  .modal{ padding: 24px; }
+  .btn{ padding: 13px 22px; font-size: .88rem; }
+}
+
+@media (max-width: 420px){
+  .quote-grid{ grid-template-columns: repeat(2, 1fr); }
+  .container{ padding: 0 18px; }
+}
